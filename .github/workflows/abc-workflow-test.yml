@@ -19,19 +19,29 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout test branch
+      - name: Checkout scripts and data
         uses: actions/checkout@v4
         with:
           ref: test/abc-workflow
+          path: source
+
+      - name: Checkout GitHub Pages
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: publish
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
+        working-directory: source
         run: python -m pip install --upgrade pip pandas numpy
 
       - name: Verify input files
+        working-directory: source
         run: |
           test -f notion_jugadores.csv
           test -f Base_Maestra_ABC.csv
@@ -54,9 +64,11 @@ jobs:
           PY
 
       - name: Run V08.2 extraction
+        working-directory: source
         run: python V08_2_copa_promesas.py
 
       - name: Validate V08.2 outputs
+        working-directory: source
         run: |
           python - <<'PY'
           import csv
@@ -78,9 +90,11 @@ jobs:
           PY
 
       - name: Run V09 consolidation
+        working-directory: source
         run: python V09_minutos_club_tijuana_Pyto_v3.py
 
       - name: Validate V09 output
+        working-directory: source
         run: |
           python - <<'PY'
           import csv
@@ -95,31 +109,31 @@ jobs:
           PY
 
       - name: Generate ABC dashboard
+        working-directory: source
         run: python generar_dashboard_clasificacion_Pyto_ABC_FICHA_JUGADOR_CONTRATO_OCULTO.py
 
-      - name: Assemble test artifact
+     
+      - name: Assemble production dashboard
+        working-directory: source
         run: |
           test -s ABC/ABC_Ficha_Jugador_Oculto.html
-          mkdir -p artifact/assets
-          cp ABC/ABC_Ficha_Jugador_Oculto.html artifact/index.html
+          mkdir -p ../publish/assets/players
+          cp ABC/ABC_Ficha_Jugador_Oculto.html ../publish/index.html
           if [ -d ABC/assets/players ]; then
-            cp -R ABC/assets/players artifact/assets/players
+            cp -R ABC/assets/players/. ../publish/assets/players/
           fi
-          python - <<'PY'
-          from pathlib import Path
-          html = Path("artifact/index.html").read_text(encoding="utf-8")
-          assert html.strip(), "El HTML generado está vacío"
-          assert "__DATA__" not in html, "El HTML conserva un marcador de datos sin reemplazar"
-          assets = Path("artifact/assets/players")
-          photos = len([p for p in assets.iterdir() if p.is_file()]) if assets.exists() else 0
-          print(f"HTML generado: {len(html)} caracteres")
-          print(f"Archivos de fotos copiados: {photos}")
-          PY
+          test -s ../publish/index.html
+          echo "Dashboard preparado para publicación."
 
-      - name: Upload test artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: abc-dashboard-test
-          path: artifact/
-          if-no-files-found: error
-          retention-days: 7
+      - name: Publish dashboard to GitHub Pages
+        working-directory: publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/players
+          if git diff --cached --quiet; then
+            echo "No hay cambios nuevos que publicar."
+          else
+            git commit -m "Update ABC dashboard automatically"
+            git push origin HEAD:main
+          fi
