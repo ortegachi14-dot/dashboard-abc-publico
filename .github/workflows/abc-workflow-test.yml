@@ -1,8 +1,10 @@
 
-name: ABC workflow test
+name: ABC dashboard diario
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * *"
 
 permissions:
   contents: read
