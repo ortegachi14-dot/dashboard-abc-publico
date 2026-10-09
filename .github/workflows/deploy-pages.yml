@@ -25,12 +25,15 @@ steps:
 - name: Descargar repositorio
 uses: actions/checkout@v4
 
-  - name: Configurar GitHub Pages
-    uses: actions/configure-pages@v5
-  - name: Preparar archivos del dashboard
-    uses: actions/upload-pages-artifact@v3
-    with:
-      path: .
-  - name: Publicar dashboard
-    id: deployment
-    uses: actions/deploy-pages@v4
+     steps:
+        - name: Descargar repositorio
+          uses: actions/checkout@v4
+        - name: Configurar GitHub Pages
+          uses: actions/configure-pages@v5
+        - name: Preparar archivos del dashboard
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: .
+        - name: Publicar dashboard
+          id: deployment
+          uses: actions/deploy-pages@v4
