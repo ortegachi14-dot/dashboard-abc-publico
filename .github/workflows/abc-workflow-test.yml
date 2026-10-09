@@ -19,7 +19,8 @@ jobs:
     steps:
       - name: Checkout test branch
         uses: actions/checkout@v4
-
+        with:
+          ref: test/abc-workflow
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
