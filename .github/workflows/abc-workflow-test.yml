@@ -129,13 +129,14 @@ jobs:
           test -s ../publish/index.html
           echo "Dashboard preparado para publicación."
 
-      - name: Publish dashboard to GitHub Pages
+      - name: Commit dashboard to main
         working-directory: publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html assets/players
-          if git diff --cached --quiet; then
+          if git diff --cached --quiet
+          then
             echo "No hay cambios nuevos que publicar."
           else
             git commit -m "Update ABC dashboard automatically"
