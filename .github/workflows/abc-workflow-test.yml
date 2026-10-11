@@ -116,7 +116,6 @@ jobs:
         working-directory: source
         run: python generar_dashboard_clasificacion_Pyto_ABC_FICHA_JUGADOR_CONTRATO_OCULTO.py
 
-     
       - name: Assemble production dashboard
         working-directory: source
         run: |
