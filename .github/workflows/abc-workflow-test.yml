@@ -75,7 +75,7 @@ jobs:
 
       - name: Run V08.2 extraction
         working-directory: source
-        run: python V08_2_copa_promesas.py
+        run: python -u V08_2_copa_promesas.py
 
       - name: Validate V08.2 outputs
         working-directory: source
