@@ -44,7 +44,7 @@ PAUSA_ENTRE_DESCARGAS = 1.0
 # Si quieres probar primero con pocos jugadores:
 # cambia a un número entero, por ejemplo 5 o 10.
 # None = procesar los 126.
-LIMITE_PRUEBA = 5
+LIMITE_PRUEBA = none
 
 # Pega aquí los 126 registros exportados de Notion si Pyto
 # no tiene acceso directo a Notion.
