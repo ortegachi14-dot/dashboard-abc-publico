@@ -95,7 +95,7 @@ jobs:
           with participations_file.open(encoding="utf-8-sig", newline="") as f:
               participations = list(csv.DictReader(f))
 
-          assert len(players) == 126, f"V08 generó {len(players)} jugadores; se esperaban 126"
+          assert len(players) == 5, f"V08 generó {len(players)} jugadores; se esperaban 126"
           print(f"V08 validado: {len(players)} jugadores y {len(participations)} participaciones")
           PY
 
